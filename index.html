@@ -2,228 +2,159 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Hệ thống K76.A03 - Phiên bản v27</title>
+    <title>K76.A03 - Hệ Thống Ôn Thi VHPT - Dạng 1 Chọn 1 đáp án</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root { 
             --primary: #2c3e50; --secondary: #27ae60; --danger: #e74c3c; 
-            --accent: #2980b9; --light: #f4f7f6; --shadow: 0 10px 30px rgba(0,0,0,0.3);
+            --accent: #2980b9; --light: #f4f7f6; --shadow: 0 12px 35px rgba(0,0,0,0.3);
         }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; color: #1a1a1a; font-size: 18px; background-color: var(--light); }
         
-        /* Trang Đăng nhập 3D chuyên nghiệp */
-        #auth-page { 
-            height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover; background-position: center; position: fixed; top: 0; left: 0; z-index: 9999;
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; 
+            color: #1a1a1a; font-size: 20px; background-color: var(--light);
+            background: linear-gradient(rgba(244, 247, 246, 0.9), rgba(244, 247, 246, 0.9)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=80');
+            background-attachment: fixed; background-size: cover;
         }
-        .auth-box { background: rgba(255, 255, 255, 0.98); padding: 40px; border-radius: 25px; width: 450px; box-shadow: var(--shadow); text-align: center; border: 1px solid white; }
-        .auth-box h1 { font-size: 26px; color: var(--primary); margin-bottom: 5px; }
-        .auth-box h2 { font-size: 20px; color: var(--accent); margin-bottom: 25px; }
-        
-        .container { max-width: 1200px; margin: 20px auto; background: white; padding: 30px; border-radius: 25px; box-shadow: var(--shadow); }
-        
-        /* Nút bấm 3D */
-        nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        button { padding: 12px 20px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.1s; box-shadow: 0 5px #7f8c8d; position: relative; outline: none; }
-        button:active { box-shadow: 0 0 #7f8c8d; transform: translateY(5px); }
+
+        .container { 
+            max-width: 1250px; margin: 30px auto; background: rgba(255, 255, 255, 0.98); 
+            padding: 35px; border-radius: 30px; box-shadow: var(--shadow);
+            border: 1px solid white;
+        }
+
+        /* Header Info */
+        .header-info { text-align: center; margin-bottom: 25px; border-bottom: 5px double var(--primary); padding-bottom: 20px; }
+        .header-info h1 { font-size: 36px; color: var(--primary); text-transform: uppercase; margin: 0; }
+        .header-info h2 { color: var(--accent); margin: 10px 0; font-size: 28px; }
+
+        /* Nút bấm 3D phong cách hiện đại */
+        nav { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
+        button { 
+            padding: 14px 24px; border: none; border-radius: 15px; cursor: pointer; 
+            font-weight: bold; font-size: 18px; transition: all 0.1s;
+            box-shadow: 0 6px #7f8c8d; position: relative; outline: none;
+        }
+        button:active { box-shadow: 0 0 #7f8c8d; transform: translateY(6px); }
         .btn-main { background: var(--primary); color: white; }
-        .btn-sub { background: var(--accent); color: white; box-shadow: 0 5px #1a5276; }
-        .btn-green { background: var(--secondary); color: white; box-shadow: 0 5px #196f3d; }
-        .btn-orange { background: #d35400; color: white; box-shadow: 0 5px #a04000; }
-        .btn-purple { background: #8e44ad; color: white; box-shadow: 0 5px #6c3483; }
+        .btn-sub { background: var(--accent); color: white; box-shadow: 0 6px #1a5276; }
+        .btn-orange { background: #d35400; color: white; box-shadow: 0 6px #a04000; }
+        .btn-purple { background: #8e44ad; color: white; box-shadow: 0 6px #6c3483; }
+        .btn-green { background: var(--secondary); color: white; box-shadow: 0 6px #196f3d; }
 
-        /* Quiz UI */
-        .q-block { border: 1px solid #cfd8dc; padding: 25px; margin: 15px 0; border-radius: 15px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .q-block p { font-weight: bold; font-size: 22px; color: #0d47a1; margin-top: 0; line-height: 1.4; }
-        .option-item { display: flex; align-items: center; margin: 10px 0; padding: 12px; border-radius: 12px; border: 1px solid #eee; cursor: pointer; }
-        .option-item:hover { background: #f0f7ff; border-color: var(--accent); }
-        input[type="radio"] { width: 32px; height: 32px; margin-right: 20px; flex-shrink: 0; cursor: pointer; }
+        /* Giao diện câu hỏi */
+        .q-block { border: 1px solid #cfd8dc; padding: 30px; margin: 15px 0; border-radius: 20px; background: #fff; border-left: 10px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .q-block p { font-weight: bold; font-size: 26px; color: #0d47a1; line-height: 1.4; margin-top: 0; }
+        .option-item { display: flex; align-items: center; margin: 12px 0; padding: 15px; border-radius: 15px; border: 1px solid #eee; cursor: pointer; transition: 0.2s; }
+        .option-item:hover { background: #e3f2fd; border-color: var(--accent); }
+        input[type="radio"] { width: 35px; height: 35px; margin-right: 20px; cursor: pointer; flex-shrink: 0; }
         
-        .correct-ans { background: #e8f5e9 !important; border-left: 10px solid #2e7d32 !important; }
-        .wrong-ans { background: #ffebee !important; border-left: 10px solid #c62828 !important; }
+        /* Trạng thái đáp án */
+        .correct-ans { background: #e8f5e9 !important; border-left: 15px solid #2e7d32 !important; }
+        .wrong-ans { background: #ffebee !important; border-left: 15px solid #c62828 !important; }
+        .ans-highlight { color: #2e7d32; font-weight: bold; background: #e8f5e9; padding: 4px 12px; border-radius: 8px; }
 
-        .result-header { background: #fff9c4; border: 4px solid #fbc02d; padding: 20px; margin-bottom: 20px; border-radius: 15px; text-align: center; display: none; }
-        .table-area { max-height: 500px; overflow-y: auto; border: 1px solid #ddd; border-radius: 15px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #eceff1; padding: 15px; position: sticky; top: 0; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .result-header { background: #fff9c4; border: 4px solid #fbc02d; padding: 25px; margin-bottom: 25px; border-radius: 20px; text-align: center; display: none; }
+        .table-area { max-height: 600px; overflow-y: auto; border-radius: 20px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: #eceff1; padding: 20px; position: sticky; top: 0; z-index: 10; font-size: 18px; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
         .hidden { display: none !important; }
+        #sync-info { text-align: center; font-size: 14px; font-weight: bold; color: var(--secondary); margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<div id="auth-page">
-    <div class="auth-box">
-        <h1 id="auth-title">Hệ thống Ôn thi Trắc nghiệm</h1>
-        <h2 id="auth-subtitle">Môn: Văn hoá Phát triển - K76.A03</h2>
-        
-        <div id="login-section">
-            <input type="text" id="user-name" style="width:100%; padding:15px; margin-bottom:15px; border-radius:10px; border:1px solid #ccc; font-size:18px; box-sizing: border-box;" placeholder="Tên tài khoản">
-            <input type="password" id="user-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:10px; border:1px solid #ccc; font-size:18px; box-sizing: border-box;" placeholder="Mật khẩu">
-            
-            <button class="btn-main" style="width:100%; font-size:18px;" onclick="handleLogin()">ĐĂNG NHẬP</button>
-            <button class="btn-green" style="width:100%; margin-top:12px; font-size:18px;" onclick="handleGuest()">VÀO NHANH (GUEST)</button>
-            <p style="margin-top:20px; font-size:16px;">Chưa có tài khoản? <a href="javascript:void(0)" onclick="showReg()">Đăng ký tại đây</a></p>
-        </div>
-
-        <div id="reg-section" class="hidden">
-            <h3 style="color:var(--secondary)">ĐĂNG KÝ TÀI KHOẢN</h3>
-            <input type="text" id="reg-name" style="width:100%; padding:15px; margin-bottom:15px; border-radius:10px; border:1px solid #ccc; font-size:18px; box-sizing: border-box;" placeholder="Nhập tên đăng nhập">
-            <input type="password" id="reg-pass" style="width:100%; padding:15px; margin-bottom:20px; border-radius:10px; border:1px solid #ccc; font-size:18px; box-sizing: border-box;" placeholder="Nhập mật khẩu">
-            <button class="btn-sub" style="width:100%; font-size:18px;" onclick="handleRegister()">XÁC NHẬN ĐĂNG KÝ</button>
-            <p style="margin-top:20px;"><a href="javascript:void(0)" onclick="showLogin()">Quay lại Đăng nhập</a></p>
-        </div>
+<div id="main-app" class="container">
+    <div class="header-info">
+        <h1>Hệ thống ôn tập thi trắc nghiệm</h1>
+        <h2>Môn: Văn hoá Phát triển - Lớp K76.A03 - Dạng 1 Chọn 1 đáp án</h2>
+        <div id="sync-info">⏳ Đang đồng bộ dữ liệu trực tuyến...</div>
     </div>
-</div>
 
-<div id="main-app" class="hidden">
-    <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <div id="welcome-msg" style="font-weight:bold; color:var(--secondary); font-size:20px;"></div>
-            <button onclick="handleLogout()" style="background:#999; color:white; padding:5px 15px; font-size:14px; box-shadow:none;">Đăng xuất</button>
-        </div>
+    <nav>
+        <button class="btn-main" onclick="startQuiz(10, 'Thi ngẫu nhiên 10 câu')">🎲 THI 10 CÂU</button>
+        <button class="btn-orange" onclick="startQuiz(20, 'Thi ngẫu nhiên 20 câu')">🔥 THI 20 CÂU</button>
+        <button class="btn-sub" onclick="showSeqBar()">🔢 THEO BỘ ĐỀ</button>
+        <button class="btn-purple" onclick="showLessonBar()">📖 THEO BÀI HỌC</button>
+        <button class="btn-green" onclick="renderViewAll()">📚 XEM TẤT CẢ ĐỀ</button>
+        <button class="btn-main" style="background:#f39c12; box-shadow: 0 6px #d35400;" onclick="renderHistory()">📜 LỊCH SỬ THI</button>
+        <button class="btn-main" onclick="adminCheck()">⚙️ QUẢN LÝ</button>
+    </nav>
 
-        <nav>
-            <button class="btn-main" onclick="startQuiz(10, 'Ngẫu nhiên 10 câu')">🎲 THI 10 CÂU</button>
-            <button class="btn-orange" onclick="startQuiz(20, 'Ngẫu nhiên 20 câu')">🔥 THI 20 CÂU</button>
-            <button class="btn-sub" onclick="renderSets()">🔢 THEO BỘ ĐỀ</button>
-            <button class="btn-purple" onclick="renderLessons()">📖 THEO BÀI HỌC</button>
-            <button class="btn-green" onclick="renderViewAll()">📚 XEM TẤT CẢ ĐỀ</button>
-            <button class="btn-main" style="background:#f39c12; box-shadow: 0 5px #d35400;" onclick="renderHistory()">📜 LỊCH SỬ</button>
-            <button id="admin-btn" class="btn-main hidden" onclick="renderManage()">⚙️ QUẢN LÝ</button>
-        </nav>
-
-        <div id="top-result" class="result-header">
-            <div id="score-text"></div>
-            <button class="btn-sub" onclick="location.reload()">LÀM ĐỀ KHÁC</button>
-        </div>
-
-        <div id="selector-bar" class="hidden" style="background:#f1f1f1; padding:15px; border-radius:15px; margin-bottom:15px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; border:1px solid #ddd;"></div>
-        <div id="app-area"></div>
-        <button class="btn-main hidden" id="submit-btn" style="width:100%; font-size:24px; padding:20px; border-radius:15px; margin-top:20px" onclick="submitQuiz()">NỘP BÀI KIỂM TRA</button>
+    <div id="top-result" class="result-header">
+        <div id="score-text"></div>
+        <button class="btn-sub" style="margin-top:15px" onclick="location.reload()">LÀM ĐỀ KHÁC</button>
     </div>
+
+    <div id="selector-bar" class="hidden" style="background:#f1f1f1; padding:20px; border-radius:20px; margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
+    
+    <div id="content-area"></div>
+    
+    <button class="btn-main hidden" id="global-submit" style="width:100%; font-size:26px; padding:25px; border-radius:20px; margin-top:25px" onclick="handleSubmit()">NỘP BÀI KIỂM TRA</button>
 </div>
 
 <script>
-// --- CONFIG & GLOBAL STATE ---
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQcdBNKk1UcnVah-VFoLa5-6QDhGN8ZEIyAtjdCjj53Sy_gfKS5ODe1lZ_TkGBPXw/pub?output=csv'; // Dán link CSV của bạn vào đây
+// --- CẤU HÌNH LINK GOOGLE SHEETS MỚI ---
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQcdBNKk1UcnVah-VFoLa5-6QDhGN8ZEIyAtjdCjj53Sy_gfKS5ODe1lZ_TkGBPXw/pub?output=csv';
 
 let App = {
-    users: JSON.parse(localStorage.getItem('k76_v27_users')) || {},
-    session: localStorage.getItem('k76_v27_session'),
-    db: JSON.parse(localStorage.getItem('k76_v27_db')) || [
-        {"bai":"1","q":"Môn học này là gì?","a":"Văn hoá Phát triển","b":"Lịch sử Đảng","c":"Triết học","d":"Luật","ans":"A"}
-    ],
+    sessionUser: 'Thành viên K76.A03',
+    history: JSON.parse(localStorage.getItem('k76_v28_history')) || [],
+    db: JSON.parse(localStorage.getItem('k76_v28_db')) || [],
     currentQs: [],
     type: ''
 };
 
-// --- INITIALIZATION ---
-window.onload = () => {
-    syncOnlineData(); // Chạy ngầm, không đợi
-    if (App.session) {
-        launchApp(App.session);
-    }
+window.onload = async () => {
+    await syncData();
+    startQuiz(10, 'Thi ngẫu nhiên 10 câu');
 };
 
-// --- AUTH FUNCTIONS (BULLETPROOF) ---
-function showReg() { document.getElementById('login-section').classList.add('hidden'); document.getElementById('reg-section').classList.remove('hidden'); }
-function showLogin() { document.getElementById('login-section').classList.remove('hidden'); document.getElementById('reg-section').classList.add('hidden'); }
-
-function handleLogin() {
-    const n = document.getElementById('user-name').value.trim();
-    const p = document.getElementById('user-pass').value.trim();
-    if(!n || !p) return alert("Vui lòng nhập đủ thông tin!");
-
-    // BYPASS ADMIN
-    if(n === 'admin' && p === 'admin') {
-        App.users['admin'] = { pass: 'admin', history: App.users['admin']?.history || [] };
-        saveAndLaunch('admin');
-        return;
-    }
-
-    // CHECK USER
-    if(App.users[n] && App.users[n].pass === p) {
-        saveAndLaunch(n);
-    } else {
-        alert("Sai tài khoản hoặc mật khẩu!");
-    }
-}
-
-function handleGuest() {
-    const guestId = "Khách_" + Math.floor(Math.random()*9999);
-    App.users[guestId] = { history: [] };
-    saveAndLaunch(guestId);
-}
-
-function handleRegister() {
-    const n = document.getElementById('reg-name').value.trim();
-    const p = document.getElementById('reg-pass').value.trim();
-    if(!n || !p) return alert("Vui lòng điền đủ!");
-    if(n.toLowerCase() === 'admin') return alert("Không được dùng tên admin!");
-    if(App.users[n]) return alert("Tên đã tồn tại!");
-
-    App.users[n] = { pass: p, history: [] };
-    localStorage.setItem('k76_v27_users', JSON.stringify(App.users));
-    alert("Đăng ký thành công! Hãy đăng nhập.");
-    showLogin();
-}
-
-function saveAndLaunch(name) {
-    localStorage.setItem('k76_v27_session', name);
-    localStorage.setItem('k76_v27_users', JSON.stringify(App.users));
-    launchApp(name);
-}
-
-function launchApp(name) {
-    App.session = name;
-    document.getElementById('auth-page').classList.add('hidden');
-    document.getElementById('main-app').classList.remove('hidden');
-    document.getElementById('welcome-msg').innerText = (name === 'admin' ? "👑 Quản trị: " : "Thành viên: ") + name;
-    if(name === 'admin') document.getElementById('admin-btn').classList.remove('hidden');
-    startQuiz(10, 'Thi ngẫu nhiên 10 câu');
-}
-
-function handleLogout() { localStorage.removeItem('k76_v27_session'); location.reload(); }
-
-// --- DATA FUNCTIONS ---
-async function syncOnlineData() {
+// --- ĐỒNG BỘ DỮ LIỆU ---
+async function syncData() {
+    const info = document.getElementById('sync-info');
     try {
-        const response = await fetch(SHEET_URL);
-        if (!response.ok) return;
-        const csv = await response.text();
-        const workbook = XLSX.read(csv, {type:'string'});
-        const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        const res = await fetch(SHEET_URL);
+        const text = await res.text();
+        const json = XLSX.utils.sheet_to_json(XLSX.read(text, {type:'string'}).Sheets[XLSX.read(text, {type:'string'}).SheetNames[0]]);
         
         App.db = json.map(r => {
             const f = (k) => Object.keys(r).find(x => x.trim().toLowerCase() === k.toLowerCase());
             return {
-                bai: String(r[f('Bài')]||'?').trim(),
+                bai: String(r[f('Bài')] || '?').trim(),
                 q: r[f('Câu hỏi')], a: r[f('A')], b: r[f('B')], c: r[f('C')], d: r[f('D')],
-                ans: (r[f('Đáp án')]||'').toString().trim().toUpperCase()
+                ans: (r[f('Đáp án')] || '').toString().trim().toUpperCase()
             };
         }).filter(x => x.q);
         
-        localStorage.setItem('k76_v27_db', JSON.stringify(App.db));
-        console.log("Đã đồng bộ " + App.db.length + " câu hỏi.");
-    } catch(e) { console.log("Offline mode."); }
+        localStorage.setItem('k76_v28_db', JSON.stringify(App.db));
+        info.innerText = `✅ Đã cập nhật ${App.db.length} câu hỏi mới nhất từ Google Sheets.`;
+    } catch(e) {
+        info.innerText = "📡 Chế độ offline (Đang dùng dữ liệu cũ).";
+    }
 }
 
-// --- QUIZ FUNCTIONS ---
-function startQuiz(count, type) {
-    document.getElementById('top-result').style.display = 'none';
+// --- LOGIC THI ---
+function resetUI() {
+    document.getElementById('content-area').innerHTML = '';
     document.getElementById('selector-bar').classList.add('hidden');
-    document.getElementById('app-area').innerHTML = '';
+    document.getElementById('global-submit').classList.add('hidden');
+    document.getElementById('top-result').style.display = 'none';
+}
+
+function startQuiz(count, type) {
+    resetUI();
     App.type = type;
+    if(App.db.length === 0) return document.getElementById('content-area').innerHTML = "Đang tải dữ liệu, vui lòng đợi...";
     App.currentQs = [...App.db].sort(() => 0.5 - Math.random()).slice(0, count);
     renderQuiz();
 }
 
 function renderQuiz() {
-    if(App.currentQs.length === 0) return document.getElementById('app-area').innerHTML = "Chưa có dữ liệu!";
-    document.getElementById('submit-btn').classList.remove('hidden');
-    document.getElementById('app-area').innerHTML = App.currentQs.map((q, i) => `
+    document.getElementById('global-submit').classList.remove('hidden');
+    document.getElementById('content-area').innerHTML = App.currentQs.map((q, i) => `
         <div class="q-block" id="wrap-${i}">
             <p>${i+1}. ${q.q} <span style="font-size:14px; color:#999;">(Bài ${q.bai})</span></p>
             ${['a','b','c','d'].map(opt => `
@@ -236,36 +167,38 @@ function renderQuiz() {
     `).join('');
 }
 
-function submitQuiz() {
+function handleSubmit() {
     let score = 0;
     App.currentQs.forEach((q, i) => {
         const sel = document.querySelector(`input[name="q${i}"]:checked`);
         const wrap = document.getElementById(`wrap-${i}`);
         if(sel && sel.value === q.ans) score++;
-        else { wrap.classList.add('wrong-ans'); wrap.innerHTML += `<b style="color:red; margin-left:52px; font-size:20px;">=> ĐÁP ÁN ĐÚNG: ${q.ans}</b>`; }
+        else { wrap.classList.add('wrong-ans'); wrap.innerHTML += `<b style="color:red; margin-left:55px; font-size:22px;">=> ĐÁP ÁN ĐÚNG: ${q.ans}</b>`; }
     });
     
-    if(!App.users[App.session].history) App.users[App.session].history = [];
-    App.users[App.session].history.push({ date: new Date().toLocaleString(), type: App.type, score: `${score}/${App.currentQs.length}` });
-    localStorage.setItem('k76_v27_users', JSON.stringify(App.users));
+    App.history.push({ date: new Date().toLocaleString('vi-VN'), type: App.type, score: `${score}/${App.currentQs.length}` });
+    localStorage.setItem('k76_v28_history', JSON.stringify(App.history));
 
-    document.getElementById('score-text').innerHTML = `<h2>KẾT QUẢ: ${score} / ${App.currentQs.length} CÂU</h2>`;
+    document.getElementById('score-text').innerHTML = `<h2>KẾT QUẢ: ${score} / ${App.currentQs.length} CÂU ĐÚNG</h2>`;
     document.getElementById('top-result').style.display = 'block';
-    document.getElementById('submit-btn').classList.add('hidden');
+    document.getElementById('global-submit').classList.add('hidden');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- NAV RENDERERS ---
-function renderSets() {
+// --- THANH ĐIỀU HƯỚNG ---
+function showSeqBar() {
+    resetUI();
     const bar = document.getElementById('selector-bar'); bar.classList.remove('hidden');
     bar.innerHTML = "<b>Bộ đề: </b>";
     for(let i=0; i<Math.ceil(App.db.length/10); i++) {
         let btn = document.createElement('button'); btn.innerText = i+1; btn.className = 'btn-sub';
-        btn.onclick = () => { App.type='Bộ '+(i+1); App.currentQs=App.db.slice(i*10,(i+1)*10); renderQuiz(); };
+        btn.onclick = () => { App.type='Bộ đề '+(i+1); App.currentQs=App.db.slice(i*10,(i+1)*10); renderQuiz(); };
         bar.appendChild(btn);
     }
 }
-function renderLessons() {
+
+function showLessonBar() {
+    resetUI();
     const bar = document.getElementById('selector-bar'); bar.classList.remove('hidden');
     const lessons = [...new Set(App.db.map(q => String(q.bai)))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
     bar.innerHTML = "<b>Chọn bài: </b>";
@@ -275,20 +208,26 @@ function renderLessons() {
         bar.appendChild(btn);
     });
 }
+
 function renderViewAll() {
-    document.getElementById('top-result').style.display = 'none';
-    document.getElementById('submit-btn').classList.add('hidden');
-    document.getElementById('app-area').innerHTML = `<h2 style="text-align:center">TỔNG HỢP ĐỀ VÀ ĐÁP ÁN</h2>` + App.db.map((q, i) => `
+    resetUI();
+    document.getElementById('content-area').innerHTML = `<h2 style="text-align:center">TỔNG HỢP ĐỀ VÀ ĐÁP ÁN</h2>` + App.db.map((q, i) => `
         <div class="q-block"><p>${i+1}. ${q.q}</p>
-        <div style="color:${q.ans==='A'?'green':'#666'}">A. ${q.a}</div><div style="color:${q.ans==='B'?'green':'#666'}">B. ${q.b}</div>
-        <div style="color:${q.ans==='C'?'green':'#666'}">C. ${q.c}</div><div style="color:${q.ans==='D'?'green':'#666'}">D. ${q.d}</div></div>`).join('');
+        <div class="${q.ans==='A'?'ans-highlight':''}">A. ${q.a}</div><div class="${q.ans==='B'?'ans-highlight':''}">B. ${q.b}</div>
+        <div class="${q.ans==='C'?'ans-highlight':''}">C. ${q.c}</div><div class="${q.ans==='D'?'ans-highlight':''}">D. ${q.d}</div></div>`).join('');
 }
+
 function renderHistory() {
-    const hist = App.users[App.session]?.history || [];
-    document.getElementById('app-area').innerHTML = `<div class="table-area"><table><tr><th>Thời gian</th><th>Loại đề</th><th>Kết quả</th></tr>${hist.slice().reverse().map(h => `<tr><td>${h.date}</td><td>${h.type}</td><td style="color:green; font-weight:bold">${h.score}</td></tr>`).join('')}</table></div>`;
+    resetUI();
+    document.getElementById('content-area').innerHTML = `<div class="table-area"><table><tr><th>Ngày thi</th><th>Loại đề</th><th>Kết quả</th></tr>${App.history.slice().reverse().map(h => `<tr><td>${h.date}</td><td>${h.type}</td><td style="color:green; font-weight:bold">${h.score}</td></tr>`).join('')}</table></div>`;
 }
-function renderManage() {
-    document.getElementById('app-area').innerHTML = `<div style="text-align:center; padding:30px;"><h3>DỮ LIỆU GOOGLE SHEETS</h3><p>Hãy chỉnh sửa câu hỏi trực tiếp trên file Google Sheets.</p><div class="table-area"><table><tr><th>STT</th><th>Bài</th><th>Câu hỏi</th><th>ĐA</th></tr>${App.db.map((q,i)=>`<tr><td>${i+1}</td><td>${q.bai}</td><td>${q.q}</td><td>${q.ans}</td></tr>`).join('')}</table></div></div>`;
+
+function adminCheck() {
+    const p = prompt("Nhập mật mã quản trị:");
+    if(p === 'admin') {
+        resetUI();
+        document.getElementById('content-area').innerHTML = `<div style="text-align:center; padding:30px;"><h3>DỮ LIỆU TỪ CLOUD GOOGLE</h3><p>Hệ thống tự động cập nhật từ link CSV của bạn.</p><button class="btn-green" onclick="syncData()">🔄 LÀM MỚI DỮ LIỆU</button><div class="table-area" style="margin-top:20px;"><table><tr><th>STT</th><th>Bài</th><th>Câu hỏi</th><th>ĐA</th></tr>${App.db.map((q,i)=>`<tr><td>${i+1}</td><td>${q.bai}</td><td>${q.q}</td><td>${q.ans}</td></tr>`).join('')}</table></div></div>`;
+    } else alert("Mật mã không đúng!");
 }
 </script>
 </body>
